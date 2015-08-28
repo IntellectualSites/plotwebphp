@@ -1,0 +1,68 @@
+{% extends 'base.plotsquared.html' %}
+{% block content %}
+<style>
+#sidebar {
+    float: left;
+    width: 200px;
+    height: 350px;
+    text-align: center;
+}
+#content {  
+    vertical-align: top;
+    margin-left:220px;
+    min-height: 300px;
+    text-align: left;
+}
+</style>
+<script>
+var addEvent = function(elem, type, eventHandle) {if (elem == null || typeof(elem) == 'undefined') return;if ( elem.addEventListener ) {elem.addEventListener( type, eventHandle, false );} else if ( elem.attachEvent ) {elem.attachEvent( "on" + type, eventHandle );} else {elem["on"+type]=eventHandle;}};
+addEvent(window, "resize", resize);
+
+function resize() {
+    var myDiv = document.getElementById("main");
+    if (myDiv.clientWidth<550   ) {
+        document.getElementById("content").style.marginLeft = 0;
+    }
+    else {
+        document.getElementById("content").style.marginLeft = '220px';
+    }
+}
+
+window.onload = function() {
+  resize();
+  title = document.getElementById("title")
+  fetch(window.location.search.substring(1).split("=")[1]);
+}
+
+function fetch(plot) {
+    var split = plot.split(",");
+    var id = split[0].split(";");
+    var x = parseInt(id[0]);
+    var z = parseInt(id[1]);
+    var world = split[1];
+    var user = split[2];
+    
+    document.getElementById("title").innerHTML += id;
+    document.getElementById("content").innerHTML = "<h2>Loading...</h2>";
+    $.get("getplot.php",{'x':x,'z':z,'world':world,'user':user},function (data) {
+        document.getElementById("content").innerHTML = "";
+        document.getElementById("content").innerHTML += data;
+    });
+    return false;
+}
+</script>
+<div id=sidebar>
+<div id=item>
+<img src="template/plot.png">
+</div>
+<br>
+<h2 id=title>
+Plot:
+</h2>
+
+</div>
+<div style="display:inline-block;width:310px;">
+</div>
+<div id=content>
+</div>
+{% endblock %}

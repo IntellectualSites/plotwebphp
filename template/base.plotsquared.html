@@ -1,0 +1,34 @@
+<HTML>
+<HEAD>
+<TITLE>{%block title %}{{ page.heading }}{% endblock %}</TITLE>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"  defer></script>
+<link rel='stylesheet' type='text/css' href=
+{%block style %}{{ page.style }}{% endblock %}
+>
+</HEAD>
+<BODY>
+
+<!--
+EDITABLE: Navigation
+-->
+<div id=nav>
+<div id=button><a id=navlink href="../../">Home</a></div>
+<div id=button><a id=navlink href="?page=search">Search</a></div>
+{% if page.upload %}
+<div id=button><a id=navlink href="?page=upload">Upload</a></div>
+{% endif %}
+</div>
+<div id=banner>
+</div>
+<h1>
+{%block heading %}{{ page.heading }}{% endblock %}
+</h1>
+<div id="main">
+{% block content%}
+Main content
+{% endblock %}
+</div>
+
+</div>
+</BODY>
+</HTML>

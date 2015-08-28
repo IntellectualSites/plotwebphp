@@ -1,0 +1,66 @@
+{% extends 'base.plotsquared.html' %}
+
+{% block heading %}
+Search for your plot
+{% endblock %}
+
+{% block content %}
+<h2 id=box align=center>
+Search for your plot here
+</h2>
+
+
+
+<form id=myform onsubmit="return post()" method="post">
+    <input type="hidden" id="hidden" name="method" placeholder="Method..."/>
+    <input type="text" id="input" name="id" placeholder="Search..." required/>
+    <input type="submit" value="Search">
+</form>
+<br>
+<div id=box>
+<h2>Search for the following items</h2>
+<table>
+    <tr>
+      <td><h3>Option</h3></td>
+      <td><h3>Example</h3></td>
+    </tr>
+    <tr>
+      <td><b>Player name</b></td>
+      <td>Empire92</td>
+    </tr>
+    <tr>
+      <td><b>Plot ID</b></td>
+      <td>0;1</td>
+    </tr>
+</table>
+<br>
+
+<script>
+function post() {
+    document.getElementById("input").value = document.getElementById("input").value.trim()
+    
+    
+    var data = {};
+    if (document.getElementById("input").value.indexOf(";") > -1) {
+        data['method'] = 'id';
+        data['id'] = document.getElementById("input").value;
+    }
+    else {
+        location.href = "?viewuser=" + document.getElementById("input").value;
+        return false;
+    }
+    $.post("search.php",data ,function (data) {
+    
+    var main = document.getElementById("main");
+    main.innerHTML = "<h2 id=box><a href='javascript:history.go(0)'>Return to search.</a></h2><h2 id=box align=center>"+data.length+" result/s found:</h2>";
+    $.each(data, function(n, val) {
+        var name = val.id + "," + val.world + "," + val.username + ".schematic";
+        var markup = "<div id=item>"+name+"</div><div id=download><a download='plot.schematic' href='{{ page.up_dir }}/"+name+"' id=dlbutton>Download</a></div>"
+        main.innerHTML += markup+"<br>"
+        });
+    });
+    return false;
+}
+</script>
+
+{% endblock %}

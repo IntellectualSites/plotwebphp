@@ -1,0 +1,18 @@
+{% extends 'base.plotsquared.html' %}
+
+{% block heading %}
+Upload a schematic
+{% endblock %}
+
+{% block content %}
+
+<h2 id=box align=center>
+Click the upload button to begin uploading your schematic
+</h2>
+
+
+<form action="upload.php" method="post" accept=".schematic" enctype="multipart/form-data">
+  <input type="file" name="uploadFile" required><br>
+  <input type="submit" value="Upload File">
+</form>
+{% endblock %}

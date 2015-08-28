@@ -1,0 +1,124 @@
+{% extends 'base.plotsquared.html' %}
+{% block content %}
+<style>
+#sidebar {
+    float: left;
+    width: 200px;
+    height: 340px;
+    text-align: center;
+}
+#content {  
+    vertical-align: top;
+    margin-left:220px;
+    min-height: 340px;
+    text-align: left;
+}
+#icon {
+    display:inline-block;
+	padding:20px;
+	margin:20px
+}
+</style>
+<script>
+var addEvent = function(elem, type, eventHandle) {if (elem == null || typeof(elem) == 'undefined') return;if ( elem.addEventListener ) {elem.addEventListener( type, eventHandle, false );} else if ( elem.attachEvent ) {elem.attachEvent( "on" + type, eventHandle );} else {elem["on"+type]=eventHandle;}};
+addEvent(window, "resize", resize);
+
+function resize() {
+    var myDiv = document.getElementById("main");
+    if (myDiv.clientWidth<550) {
+        document.getElementById("content").style.marginLeft = 0;
+    }
+    else {
+        document.getElementById("content").style.marginLeft = '220px';
+    }
+}
+
+window.onload = function() {
+  resize();
+  user = window.location.search.substring(1).split("=")[1];
+  title = document.getElementById("title");
+  title.innerHTML = "User: " + user;
+  item = document.getElementById("icon");
+  fetch(user);
+  item.innerHTML = "<img src='http://mcapi.ca/skin/3d/"+user+"/100'>";
+}
+
+function display(user) {
+    var data = {};
+    data['method'] = 'username';
+    data['username'] = user;
+    $.post("search.php",data ,function (data) {
+    var main = document.getElementById("content");
+    main.innerHTML = "<h2 id=box><a href='?'>Return to search.</a></h2><h2 id=box align=center>"+data.length+" result/s found:</h2>";
+    $.each(data, function(n, val) {
+        var name = val.id + "," + val.world + "," + val.username + ".schematic";
+        var id = val.world + ": " + val.id
+        var markup = "<div id=item>"+id+"</div><div id=download><a download='plot.schematic' href='{{ page.up_dir }}/"+name+"' id=dlbutton>Download</a></div>"
+        main.innerHTML += markup+"<br>"
+        });
+    });
+    return false;
+}
+
+function fetch(user) {
+    document.getElementById("mytab").innerHTML = "Loading...";
+    $.ajax({
+        url: "getuser.php", 
+        data: {'user':user},
+        type: 'get',
+        statusCode: {
+        500: function() {
+            display(user);
+            }
+        },
+        error: function(data){
+            display(user);
+        },
+        success: function(data){
+            document.getElementById("mytab").innerHTML = "";
+            var count = 0;
+            try {
+                var plots = jQuery.parseJSON(data);
+                $.each(plots, function(n, val) {
+                    count++;
+                    var id = val.plot_id_x + ";" + val.plot_id_z;
+                    var world = val.world;
+                    var name = id + "," + world + "," + user;
+                    var url = "<a href='?viewplot="+name+"'>info</a>";
+                    var html =
+                    "</tr>" +
+                      "<tr>" +
+                      "<td><b>" + id + "</b></td>" +
+                      "<td>" + world + "</td>" +
+                      "<td>" + url + "</td>" +
+                    "</tr>"
+                    document.getElementById("mytab").innerHTML += html;
+                }); 
+            }
+            catch(err) {}
+            if (count == 0) {
+                display(user);
+            }
+            else {
+                document.getElementById("mytab").innerHTML = "<tr><td><h3>Id</h3></td><td><h3>World</h3></td><td><h3>View</h3></td></tr>" + document.getElementById("mytab").innerHTML;
+            }
+        }
+    });
+    return false;
+}
+</script>
+<div id=sidebar>
+<div id=icon>
+</div>
+<br>
+<h2 id=title>
+User: 
+</h2>
+</div>
+<div style="display:inline-block;width:310px;">
+</div>
+<div id=content>
+<table id=mytab>
+</table>
+</div>
+{% endblock %}
