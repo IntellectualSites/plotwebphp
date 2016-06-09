@@ -15,7 +15,7 @@ function getUUID($usr) {
     if (strlen($usr) < 2) {
         return null;
     }
-    if (strlen($usr) > 16 && preg_match('/^\{?[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\}?$/', $usr) == 0) {
+    if (strlen($usr) > 16 && preg_match('/^\{?[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\}?$/', $usr) != 0) {
         return $usr;
     }
     $url = 'https://api.mojang.com/users/profiles/minecraft/' . $usr;
