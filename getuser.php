@@ -12,15 +12,15 @@ $db_name=$mysql_settings['database'];
 $tbl_name=$mysql_settings['prefix'] . 'plot';
 
 function getUUID($usr) {
-    if (strlen($usr)<2) {
+    if (strlen($usr) < 2) {
         return null;
     }
-    $url = 'https://api.mojang.com/profiles/page/1';
+    if (strlen($usr) > 16 && preg_match('/^\{?[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\}?$/', $usr) == 0) {
+        return $usr;
+    }
+    $url = 'https://api.mojang.com/users/profiles/minecraft/' . $usr;
     $options = array(
         'http' => array(
-            'header'  => "Content-type: application/json\r\n",
-            'method'  => 'POST',
-            'content' => '{"name":"'.$usr.'","agent":"minecraft"}',
             'timeout' => 5
         ),
     );
@@ -28,9 +28,7 @@ function getUUID($usr) {
     $result = file_get_contents($url, false, $context);
     if(isset($result) && $result != null && $result != false) {
         $ress = json_decode($result, true);
-        $ress = $ress["profiles"][0];
-        $res = Array("usr" =>  $ress['name'], "uuid" => $ress['id']);
-        return $res['uuid'];
+        return $ress = $ress["id"];
     }
     else {
         return null;
