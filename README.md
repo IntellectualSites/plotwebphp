@@ -1,7 +1,7 @@
 PlotWebPHP
 ==========
-This piece of software is used to manage
-schematics for your PlotWorld (Required PlotSquared).
+
+# This project is end of life and has been replaced by [Arkitektonika](https://github.com/IntellectualSites/Arkitektonika).
 
 **Installation:**
 
